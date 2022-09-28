@@ -43,6 +43,10 @@ func (v2d *Vector2d) GetDotProduct(vector Vector2d) float64 {
 	return (v2d.X * vector.X) + (v2d.Y * vector.Y)
 }
 
+func (v2d *Vector2d) GetAbs() float64 {
+	return math.Sqrt(math.Pow(v2d.X, 2) + math.Pow(v2d.Y, 2))
+}
+
 // GetRelativeCoords gets the relative coordinates of a point from another given point
 func (v2d *Vector2d) GetRelativeCoords(point Vector2d) Vector2d {
 	vect := Vector2d{v2d.X, v2d.Y}
@@ -55,9 +59,12 @@ func (v2d *Vector2d) GetRelativeCoords(point Vector2d) Vector2d {
 func (v2d *Vector2d) RotateAbout(point Vector2d, angleRads float64) {
 	// Treat the point as the origin
 	temp := v2d.GetRelativeCoords(point)
+	// Only calculate these once per point :)
+	tSin := math.Sin(angleRads)
+	tCos := math.Cos(angleRads)
 	// Rotate around Origin
-	v2d.X = (math.Cos(angleRads) * temp.X) + (math.Sin(angleRads) * -temp.Y)
-	v2d.Y = (math.Sin(angleRads) * temp.X) + (math.Cos(angleRads) * temp.Y)
+	v2d.X = (tCos * temp.X) + (tSin * -temp.Y)
+	v2d.Y = (tSin * temp.X) + (tCos * temp.Y)
 	// Translate back to where it should be
 	v2d.Translate(point)
 }
