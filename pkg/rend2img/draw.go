@@ -1,6 +1,7 @@
 package rend2img
 
 import (
+	"fmt"
 	"image"
 	"image/color"
 	"math"
@@ -27,8 +28,7 @@ func blendColors(col color.Color, col2 color.Color) color.RGBA {
 func DrawPoints(inp []primitives.Vector2d, col [4]byte) *image.RGBA {
 	minMax, _ := primitives.GetVector2dMinMax(inp)
 	minMax[1] = minMax[1].GetRelativeCoords(minMax[0])
-	minMax[0] = primitives.Vector2d{X: minMax[0].X * -1, Y: minMax[0].Y * -1}
-
+	fmt.Println(minMax)
 	// Create minimum image required to store the shape
 	img := image.NewRGBA(image.Rect(0, 0, int(minMax[1].X)+1, int(minMax[1].Y)+1))
 

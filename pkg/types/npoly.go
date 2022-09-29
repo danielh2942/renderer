@@ -75,7 +75,7 @@ func (np *NPoly) Render() ([]primitives.Vector2d, error) {
 
 	lineLen := int(math.Ceil(maxLineLength))
 	pts := len(np.Points) * lineLen
-	newCoords := make([]primitives.Vector2d, pts)
+	newCoords := make([]primitives.Vector2d, pts+1)
 	tChange := 1 / maxLineLength
 	i := 0
 
