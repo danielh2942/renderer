@@ -59,8 +59,8 @@ func (np *NPoly) RotateAbout(vec primitives.Vector2d, angleRads float64) {
 	}
 }
 
-// RotateAboutCenter rotates about the center of a polygon
-func (np *NPoly) RotateAboutCenter(angleRads float64) {
+// getCenter returns the Center Vector
+func (np *NPoly) getCenter() primitives.Vector2d {
 	// Get center of the polygon
 	var mX float64 = 0
 	var mY float64 = 0
@@ -72,13 +72,44 @@ func (np *NPoly) RotateAboutCenter(angleRads float64) {
 	mX /= float64(len(np.Points))
 	mY /= float64(len(np.Points))
 
-	center := primitives.Vector2d{X: mX, Y: mY}
+	return primitives.Vector2d{X: mX, Y: mY}
+}
+
+// RotateAboutCenter rotates about the center of a polygon
+func (np *NPoly) RotateAboutCenter(angleRads float64) {
+
+	center := np.getCenter()
 
 	// Rotate about it
 	for i, pt := range np.Points {
 		pt.RotateAbout(center, angleRads)
 		np.Points[i] = pt
 	}
+}
+
+// GetTriangles decomposes a shape into it's composite triangles
+func (np *NPoly) GetTriangles() []Triangle {
+	if len(np.Points) < 3 {
+		return []Triangle{}
+	} else if len(np.Points) == 3 {
+		return []Triangle{MakeTriangle(np.Points[0], np.Points[1], np.Points[2])}
+	}
+
+	// Get the center point
+
+	center := np.getCenter()
+
+	// Figure out triangles
+
+	triangles := make([]Triangle, len(np.Points))
+	for i := range np.Points {
+		if i == len(np.Points)-1 {
+			triangles[i] = MakeTriangle(center, np.Points[i], np.Points[0])
+		} else {
+			triangles[i] = MakeTriangle(center, np.Points[i], np.Points[i+1])
+		}
+	}
+	return triangles
 }
 
 // Render draws the poly as points
@@ -119,4 +150,16 @@ func (np *NPoly) Render() ([]primitives.Vector2d, error) {
 		i++
 	}
 	return newCoords, nil
+}
+
+func (np *NPoly) RenderComposite() ([][]primitives.Vector2d, error) {
+
+	triangles := np.GetTriangles()
+
+	outp := make([][]primitives.Vector2d, len(np.Points))
+	for i, t := range triangles {
+		tPts, _ := t.Render()
+		outp[i] = tPts
+	}
+	return outp, nil
 }

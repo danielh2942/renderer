@@ -1,7 +1,6 @@
 package rend2img
 
 import (
-	"fmt"
 	"image"
 	"image/color"
 	"math"
@@ -28,7 +27,7 @@ func blendColors(col color.Color, col2 color.Color) color.RGBA {
 func DrawPoints(inp []primitives.Vector2d, col [4]byte) *image.RGBA {
 	minMax, _ := primitives.GetVector2dMinMax(inp)
 	minMax[1] = minMax[1].GetRelativeCoords(minMax[0])
-	fmt.Println(minMax)
+
 	// Create minimum image required to store the shape
 	img := image.NewRGBA(image.Rect(0, 0, int(minMax[1].X)+1, int(minMax[1].Y)+1))
 
@@ -46,8 +45,8 @@ func DrawPoints(inp []primitives.Vector2d, col [4]byte) *image.RGBA {
 	return img
 }
 
-// scaLineFill assumes X and Y are valid and does some really manky stuff to figure shit out
-func scanLineFill(img *image.RGBA, startX int, endX int, y int, col [4]byte) {
+// ScaLineFill assumes X and Y are valid and does some really manky stuff to figure shit out
+func ScanLineFill(img *image.RGBA, startX int, endX int, y int, col [4]byte) {
 	imgPtr := (*[]uint32)(unsafe.Pointer(&img.Pix))
 	colVal := (*uint32)(unsafe.Pointer(&col[0]))
 
@@ -86,9 +85,34 @@ func FillShape(img *image.RGBA, col [4]byte) {
 					prev[1] = y
 				} else {
 					//Draw a scanline
-					scanLineFill(img, prev[0]+1, x, y, col)
+					ScanLineFill(img, prev[0]+1, x, y, col)
 				}
 			}
 		}
 	}
+}
+
+func DrawCompositePoints(inpVec [][]primitives.Vector2d, col [4]byte) (*image.RGBA, error) {
+	minMax, err := primitives.GetCompositeVector2dMinMax(inpVec)
+	if err != nil {
+		return nil, err
+	}
+
+	minMax[1] = minMax[1].GetRelativeCoords(minMax[0])
+
+	img := image.NewRGBA(image.Rect(0, 0, int(minMax[1].X)+1, int(minMax[1].Y)+1))
+
+	for _, arr := range inpVec {
+		for _, pt := range arr {
+			pt = pt.GetRelativeCoords(minMax[0])
+			img.SetRGBA(int(math.Round(pt.X)), int(math.Round(pt.Y)), color.RGBA{
+				R: col[0],
+				G: col[1],
+				B: col[2],
+				A: col[3],
+			})
+		}
+	}
+
+	return img, nil
 }

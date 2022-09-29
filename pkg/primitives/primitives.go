@@ -20,6 +20,11 @@ type Renderable interface {
 	Render() ([]Vector2d, error)
 }
 
+// RenderableComposite constructs an Obj2D image as a more complicated shape
+type RenderableComposite interface {
+	RenderComposite() ([][]Vector2d, error)
+}
+
 // Helper functions
 
 // GetVector2dMinMax returns the minimum and maximum X,Y values shared across a group of vectors
@@ -38,6 +43,29 @@ func GetVector2dMinMax(inpVec []Vector2d) ([2]Vector2d, error) {
 		outp[1].X = math.Max(outp[1].X, vec.X)
 		outp[0].Y = math.Min(outp[0].Y, vec.Y)
 		outp[1].Y = math.Max(outp[1].Y, vec.Y)
+	}
+
+	return outp, nil
+}
+
+// GetCompositeVector2dMinMax does the same but for 2d arrays
+func GetCompositeVector2dMinMax(inpVec [][]Vector2d) ([2]Vector2d, error) {
+	outp := [2]Vector2d{}
+
+	if len(inpVec) < 1 {
+		return outp, errors.New("need at least one slice of vectors in slice")
+	}
+
+	for _, p := range inpVec {
+		tMinMax, err := GetVector2dMinMax(p)
+		if err != nil {
+			return outp, err
+		}
+
+		outp[0].X = math.Min(tMinMax[0].X, outp[0].X)
+		outp[0].Y = math.Min(tMinMax[0].Y, outp[0].Y)
+		outp[1].X = math.Max(tMinMax[1].X, outp[1].X)
+		outp[1].Y = math.Max(tMinMax[1].Y, outp[1].Y)
 	}
 
 	return outp, nil

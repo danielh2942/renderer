@@ -98,7 +98,7 @@ func (q *Quad) Render() ([]primitives.Vector2d, error) {
 
 	// Allocate 4x maximum line length for every line on the quad
 	lineLen := int(math.Ceil(maxLineLength))
-	pts := 4 * lineLen
+	pts := 4*lineLen + 4
 	newCoords := make([]primitives.Vector2d, pts)
 	tChange := 1 / maxLineLength
 	i := 0
@@ -128,4 +128,11 @@ func (q *Quad) Render() ([]primitives.Vector2d, error) {
 		i++
 	}
 	return newCoords, nil
+}
+
+func (q *Quad) GetTriangles() []Triangle {
+	return []Triangle{
+		MakeTriangle(q.Point1, q.Point2, q.Point4),
+		MakeTriangle(q.Point2, q.Point3, q.Point4),
+	}
 }
