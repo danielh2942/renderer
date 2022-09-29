@@ -59,6 +59,28 @@ func (np *NPoly) RotateAbout(vec primitives.Vector2d, angleRads float64) {
 	}
 }
 
+// RotateAboutCenter rotates about the center of a polygon
+func (np *NPoly) RotateAboutCenter(angleRads float64) {
+	// Get center of the polygon
+	var mX float64 = 0
+	var mY float64 = 0
+
+	for _, pts := range np.Points {
+		mX += pts.X
+		mY += pts.Y
+	}
+	mX /= float64(len(np.Points))
+	mY /= float64(len(np.Points))
+
+	center := primitives.Vector2d{X: mX, Y: mY}
+
+	// Rotate about it
+	for i, pt := range np.Points {
+		pt.RotateAbout(center, angleRads)
+		np.Points[i] = pt
+	}
+}
+
 // Render draws the poly as points
 func (np *NPoly) Render() ([]primitives.Vector2d, error) {
 	maxLineLength := 0.0

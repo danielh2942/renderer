@@ -39,10 +39,12 @@ func (v2d *Vector2d) Translate(translate Vector2d) {
 	v2d.Y = v2d.Y + translate.Y
 }
 
+// GetDotProduct gets the Dot Product of two vectors
 func (v2d *Vector2d) GetDotProduct(vector Vector2d) float64 {
 	return (v2d.X * vector.X) + (v2d.Y * vector.Y)
 }
 
+// GetAbs gets the absolute value of the vector
 func (v2d *Vector2d) GetAbs() float64 {
 	return math.Sqrt(math.Pow(v2d.X, 2) + math.Pow(v2d.Y, 2))
 }
@@ -67,4 +69,14 @@ func (v2d *Vector2d) RotateAbout(point Vector2d, angleRads float64) {
 	v2d.Y = (tSin * temp.X) + (tCos * temp.Y)
 	// Translate back to where it should be
 	v2d.Translate(point)
+}
+
+// RotateAboutCenter does nothing on a 2D vector
+func (v2d *Vector2d) RotateAboutCenter(angleRads float64) {
+	// Nothing to do...
+}
+
+// Render returns the vector itself in a slice
+func (v2d *Vector2d) Render() ([]Vector2d, error) {
+	return []Vector2d{(*v2d)}, nil
 }

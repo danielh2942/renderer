@@ -22,6 +22,7 @@ type Quad struct {
 	Point4 primitives.Vector2d `json:"Point4"` // Bottom Right
 }
 
+// Translate moves a quad by whatever is in the vector
 func (q *Quad) Translate(vec primitives.Vector2d) {
 	q.Point1.Translate(vec)
 	q.Point2.Translate(vec)
@@ -29,6 +30,7 @@ func (q *Quad) Translate(vec primitives.Vector2d) {
 	q.Point4.Translate(vec)
 }
 
+// Scale scales the Quad on both X and Y values
 func (q *Quad) Scale(scaleFactor float64) {
 	q.Point1.Scale(scaleFactor)
 	q.Point2.Scale(scaleFactor)
@@ -36,6 +38,7 @@ func (q *Quad) Scale(scaleFactor float64) {
 	q.Point4.Scale(scaleFactor)
 }
 
+// ScaleX scales the X value of all points
 func (q *Quad) ScaleX(scaleFactor float64) {
 	q.Point1.ScaleX(scaleFactor)
 	q.Point2.ScaleX(scaleFactor)
@@ -43,6 +46,7 @@ func (q *Quad) ScaleX(scaleFactor float64) {
 	q.Point4.ScaleX(scaleFactor)
 }
 
+// ScaleY scales the Y value of all points
 func (q *Quad) ScaleY(scaleFactor float64) {
 	q.Point1.ScaleY(scaleFactor)
 	q.Point2.ScaleY(scaleFactor)
@@ -50,6 +54,7 @@ func (q *Quad) ScaleY(scaleFactor float64) {
 	q.Point4.ScaleY(scaleFactor)
 }
 
+// ScaleXY scales the X and Y values independent of one another
 func (q *Quad) ScaleXY(scaleFactorX float64, scaleFactorY float64) {
 	q.Point1.ScaleXY(scaleFactorX, scaleFactorY)
 	q.Point2.ScaleXY(scaleFactorX, scaleFactorY)
@@ -57,6 +62,7 @@ func (q *Quad) ScaleXY(scaleFactorX float64, scaleFactorY float64) {
 	q.Point4.ScaleXY(scaleFactorX, scaleFactorY)
 }
 
+// RotateAbout rotates the entire poly about an arbitrary point
 func (q *Quad) RotateAbout(vec primitives.Vector2d, angleRads float64) {
 	q.Point1.RotateAbout(vec, angleRads)
 	q.Point2.RotateAbout(vec, angleRads)
@@ -64,6 +70,20 @@ func (q *Quad) RotateAbout(vec primitives.Vector2d, angleRads float64) {
 	q.Point4.RotateAbout(vec, angleRads)
 }
 
+// RotateAboutCenter rotates about the center of the quad
+func (q *Quad) RotateAboutCenter(angleRads float64) {
+	center := primitives.Vector2d{
+		X: (q.Point1.X + q.Point2.X + q.Point3.X + q.Point4.X) / 4,
+		Y: (q.Point1.Y + q.Point2.Y + q.Point3.Y + q.Point4.Y) / 4,
+	}
+
+	q.Point1.RotateAbout(center, angleRads)
+	q.Point2.RotateAbout(center, angleRads)
+	q.Point3.RotateAbout(center, angleRads)
+	q.Point4.RotateAbout(center, angleRads)
+}
+
+// Render renders the Quad
 func (q *Quad) Render() ([]primitives.Vector2d, error) {
 
 	// Get longest line

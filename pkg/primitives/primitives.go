@@ -5,6 +5,7 @@ import (
 	"math"
 )
 
+// Obj2D is an interface defining the API for any 2D object that can be handled by the renderer
 type Obj2D interface {
 	Translate(Vector2d)            // Move Obj2D by magnitude provided by vector passed
 	Scale(float64)                 // Scale X,Y of all Points by Z magnitude
@@ -12,6 +13,7 @@ type Obj2D interface {
 	ScaleY(float64)                // Scale Y of all Points by Z magnitude
 	ScaleXY(float64, float64)      // Scale X and Y of all points by Z and A respectively
 	RotateAbout(Vector2d, float64) // Rotate all points around given point by X coords
+	RotateAboutCenter(float64)     // Rotate a 2D Object about its center
 }
 
 type Renderable interface {
@@ -19,6 +21,7 @@ type Renderable interface {
 }
 
 // Helper functions
+
 // GetVector2dMinMax returns the minimum and maximum X,Y values shared across a group of vectors
 func GetVector2dMinMax(inpVec []Vector2d) ([2]Vector2d, error) {
 	outp := [2]Vector2d{{}, {}}
