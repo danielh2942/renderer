@@ -70,3 +70,14 @@ func GetCompositeVector2dMinMax(inpVec [][]Vector2d) ([2]Vector2d, error) {
 
 	return outp, nil
 }
+
+// GetCosineSimilarity gets the cosine similarity between two vectors
+// P1 is end 1
+// P2 is the pivot point
+// P3 is end 2
+func GetCosineSimilarity(p1, p2, p3 Vector2d) float64 {
+	tP1 := p1.GetRelativeCoords(p2)
+	tP3 := p3.GetRelativeCoords(p2)
+
+	return (tP1.GetDotProduct(tP3) / (tP1.GetAbs() * tP3.GetAbs()))
+}
