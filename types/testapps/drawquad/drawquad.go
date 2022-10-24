@@ -9,8 +9,7 @@ import (
 	"os"
 	"unsafe"
 
-	"github.com/danielh2942/renderer/pkg/primitives"
-	"github.com/danielh2942/renderer/pkg/types"
+	"github.com/danielh2942/renderer/types"
 )
 
 func imgset(img *image.RGBA, myCol []byte) {
@@ -41,10 +40,10 @@ func main() {
 	defer f.Close()
 
 	mQuad := types.Quad{
-		Point1: primitives.Vector2d{X: 500, Y: 500},
-		Point2: primitives.Vector2d{X: 1000, Y: 500},
-		Point3: primitives.Vector2d{X: 500, Y: 1000},
-		Point4: primitives.Vector2d{X: 1000, Y: 1000},
+		Point1: types.Vector2d{X: 500, Y: 500},
+		Point2: types.Vector2d{X: 1000, Y: 500},
+		Point3: types.Vector2d{X: 500, Y: 1000},
+		Point4: types.Vector2d{X: 1000, Y: 1000},
 	}
 
 	pts, _ := mQuad.Render()
@@ -54,10 +53,10 @@ func main() {
 	}
 
 	mQuad2 := types.Quad{
-		Point1: primitives.Vector2d{X: 750, Y: 250},
-		Point2: primitives.Vector2d{X: 1250, Y: 750},
-		Point3: primitives.Vector2d{X: 750, Y: 1250},
-		Point4: primitives.Vector2d{X: 250, Y: 750},
+		Point1: types.Vector2d{X: 750, Y: 250},
+		Point2: types.Vector2d{X: 1250, Y: 750},
+		Point3: types.Vector2d{X: 750, Y: 1250},
+		Point4: types.Vector2d{X: 250, Y: 750},
 	}
 
 	pts, _ = mQuad2.Render()

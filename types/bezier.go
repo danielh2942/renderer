@@ -1,10 +1,8 @@
-package bezier
+package types
 
 import (
 	"errors"
 	"math"
-
-	"github.com/danielh2942/renderer/pkg/primitives"
 )
 
 // binomialCoefficients stores the first 26 rows of pascals triangle,
@@ -59,17 +57,17 @@ func getBinomialCoefficient(x int, n int) uint64 {
 	return binomialCoefficients[x][n]
 }
 
-// DrawCurve returns a slice containing points on a given bezier curve,
+// DrawCurve returns a slice containing points on a given types.curve,
 // Bezier curves take control points as arguments, the only time that
 // All points given are guaranteed to exist on a line is when there's
 // Only two points provided.
 // this outputs it in whatever scale you provided the input in
 // If the coords are in world space, it returns world space
 // If they're screen space, it returns screen space, if it's pixels, it returns pixels etc. etc.
-func DrawCurve(quantity uint, points ...primitives.Vector2d) ([]primitives.Vector2d, error) {
+func DrawCurve(quantity uint, points ...Vector2d) ([]Vector2d, error) {
 	// Add points and stuff
-	NewPoints := []primitives.Vector2d{}
-	OutputCoords := make([]primitives.Vector2d, quantity)
+	NewPoints := []Vector2d{}
+	OutputCoords := make([]Vector2d, quantity)
 	var tally int = 0
 	for _, x := range points {
 		NewPoints = append(NewPoints, x)
@@ -79,12 +77,12 @@ func DrawCurve(quantity uint, points ...primitives.Vector2d) ([]primitives.Vecto
 		return nil, errors.New("invalid quantity of points")
 	}
 
-	MinMaxVals, _ := primitives.GetVector2dMinMax(NewPoints)
+	MinMaxVals, _ := GetVector2dMinMax(NewPoints)
 	// Get the linear distance between points for getting the scale factor, this will be used again :)
 	MaxPoint := MinMaxVals[1].GetRelativeCoords(MinMaxVals[0])
 	scaleFactorY := 1 / MaxPoint.Y
 	scaleFactorX := 1 / MaxPoint.X
-	InverseMinPoint := primitives.Vector2d{X: MinMaxVals[0].X * -1, Y: MinMaxVals[0].Y * -1}
+	InverseMinPoint := Vector2d{X: MinMaxVals[0].X * -1, Y: MinMaxVals[0].Y * -1}
 
 	for idx, val := range NewPoints {
 		val.Translate(InverseMinPoint)
@@ -107,7 +105,7 @@ func DrawCurve(quantity uint, points ...primitives.Vector2d) ([]primitives.Vecto
 			tX += tmp * point.X * tmp2
 			tY += tmp * point.Y * tmp2
 		}
-		OutputCoords[count] = primitives.Vector2d{X: tX, Y: tY}
+		OutputCoords[count] = Vector2d{X: tX, Y: tY}
 		// Translate and scale back to what they should be
 		OutputCoords[count].ScaleXY(MaxPoint.X, MaxPoint.Y)
 		OutputCoords[count].Translate(MinMaxVals[0])

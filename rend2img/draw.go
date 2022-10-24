@@ -6,7 +6,7 @@ import (
 	"math"
 	"unsafe"
 
-	"github.com/danielh2942/renderer/pkg/primitives"
+	"github.com/danielh2942/renderer/primitives"
 )
 
 /*
@@ -23,7 +23,7 @@ func blendColors(col color.Color, col2 color.Color) color.RGBA {
 }
 */
 
-// DrawPoints draws the thing as an image
+// DrawPoints draws the points provided as an image.
 func DrawPoints(inp []primitives.Vector2d, col [4]byte) *image.RGBA {
 	minMax, _ := primitives.GetVector2dMinMax(inp)
 	minMax[1] = minMax[1].GetRelativeCoords(minMax[0])
@@ -45,7 +45,8 @@ func DrawPoints(inp []primitives.Vector2d, col [4]byte) *image.RGBA {
 	return img
 }
 
-// ScaLineFill assumes X and Y are valid and does some really manky stuff to figure shit out
+// ScanLineFill assumes X and Y are valid and does some kind of messy pointer manipulations
+// in order to reduce the amount of work required to fill the image.
 func ScanLineFill(img *image.RGBA, startX int, endX int, y int, col [4]byte) {
 	imgPtr := (*[]uint32)(unsafe.Pointer(&img.Pix))
 	colVal := (*uint32)(unsafe.Pointer(&col[0]))
@@ -61,7 +62,8 @@ func ScanLineFill(img *image.RGBA, startX int, endX int, y int, col [4]byte) {
 }
 
 // FillShape uses even-odd rule to fill a space within colored points.
-// It screws up on shapes with insets sometimes however
+// It screws up on shapes with insets, but technically they're no longer
+// One shape so that is expected behavior.
 func FillShape(img *image.RGBA, col [4]byte) {
 	bounds := img.Bounds()
 	imgMaxX := bounds.Max.X
@@ -92,6 +94,7 @@ func FillShape(img *image.RGBA, col [4]byte) {
 	}
 }
 
+// DrawCompositePoints takes a composite shape and draws it.
 func DrawCompositePoints(inpVec [][]primitives.Vector2d, col [4]byte) (*image.RGBA, error) {
 	minMax, err := primitives.GetCompositeVector2dMinMax(inpVec)
 	if err != nil {

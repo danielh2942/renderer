@@ -12,11 +12,10 @@ import (
 	"math"
 	"os"
 
-	"github.com/danielh2942/renderer/pkg/bezier"
-	"github.com/danielh2942/renderer/pkg/primitives"
+	"github.com/danielh2942/renderer/types"
 )
 
-// CurveViewer, this is for checking the the bezier curve function works
+// CurveViewer, this is for checking the the types.curve function works
 
 func main() {
 	// We'll check a few different curves on the same image I suppose
@@ -28,16 +27,16 @@ func main() {
 		}
 	}
 	// Test a straight line because why not
-	straightLine := []primitives.Vector2d{{X: 0, Y: 0}, {X: 100, Y: 100}}
+	straightLine := []types.Vector2d{{X: 0, Y: 0}, {X: 100, Y: 100}}
 	// it's 45 deg so it should be fine to use 101 points
-	outStraightLine, _ := bezier.DrawCurve(101, straightLine...)
+	outStraightLine, _ := types.DrawCurve(101, straightLine...)
 	for _, pt := range outStraightLine {
 		img.SetRGBA(int(pt.X), int(pt.Y), color.RGBA{255, 255, 255, 255})
 	}
 
 	// Make an Arc (Three points)
-	arc := []primitives.Vector2d{{X: 0, Y: 849}, {X: 0, Y: 1049}, {X: 200, Y: 1049}}
-	outArc, _ := bezier.DrawCurve(400, arc...)
+	arc := []types.Vector2d{{X: 0, Y: 849}, {X: 0, Y: 1049}, {X: 200, Y: 1049}}
+	outArc, _ := types.DrawCurve(400, arc...)
 
 	for _, pt := range outArc {
 		img.SetRGBA(int(pt.X), int(pt.Y), color.RGBA{255, 255, 255, 255})
@@ -45,8 +44,8 @@ func main() {
 	}
 
 	// Four point Arc
-	fourArc := []primitives.Vector2d{{X: 600, Y: 700}, {X: 850, Y: 520}, {X: 600, Y: 20}, {X: 1280, Y: 720}}
-	outFourArc, _ := bezier.DrawCurve(2000, fourArc...)
+	fourArc := []types.Vector2d{{X: 600, Y: 700}, {X: 850, Y: 520}, {X: 600, Y: 20}, {X: 1280, Y: 720}}
+	outFourArc, _ := types.DrawCurve(2000, fourArc...)
 
 	for _, pt := range outFourArc {
 		img.SetRGBA(int(pt.X), int(pt.Y), color.RGBA{255, 255, 255, 255})

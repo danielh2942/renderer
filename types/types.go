@@ -1,4 +1,6 @@
-package primitives
+package types
+
+// types is a package containing all the base types known to the renderer library
 
 import (
 	"errors"

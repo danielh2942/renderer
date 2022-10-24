@@ -2,8 +2,6 @@ package types
 
 import (
 	"math"
-
-	"github.com/danielh2942/renderer/pkg/primitives"
 )
 
 // Quad is a 4 point Polygon
@@ -16,14 +14,14 @@ type Quad struct {
 		2->4
 		3->4
 	*/
-	Point1 primitives.Vector2d `json:"Point1"` // Top Left
-	Point2 primitives.Vector2d `json:"Point2"` // Top Right
-	Point3 primitives.Vector2d `json:"Point3"` // Bottom Left
-	Point4 primitives.Vector2d `json:"Point4"` // Bottom Right
+	Point1 Vector2d `json:"Point1"` // Top Left
+	Point2 Vector2d `json:"Point2"` // Top Right
+	Point3 Vector2d `json:"Point3"` // Bottom Left
+	Point4 Vector2d `json:"Point4"` // Bottom Right
 }
 
 // Translate moves a quad by whatever is in the vector
-func (q *Quad) Translate(vec primitives.Vector2d) {
+func (q *Quad) Translate(vec Vector2d) {
 	q.Point1.Translate(vec)
 	q.Point2.Translate(vec)
 	q.Point3.Translate(vec)
@@ -63,7 +61,7 @@ func (q *Quad) ScaleXY(scaleFactorX float64, scaleFactorY float64) {
 }
 
 // RotateAbout rotates the entire poly about an arbitrary point
-func (q *Quad) RotateAbout(vec primitives.Vector2d, angleRads float64) {
+func (q *Quad) RotateAbout(vec Vector2d, angleRads float64) {
 	q.Point1.RotateAbout(vec, angleRads)
 	q.Point2.RotateAbout(vec, angleRads)
 	q.Point3.RotateAbout(vec, angleRads)
@@ -72,7 +70,7 @@ func (q *Quad) RotateAbout(vec primitives.Vector2d, angleRads float64) {
 
 // RotateAboutCenter rotates about the center of the quad
 func (q *Quad) RotateAboutCenter(angleRads float64) {
-	center := primitives.Vector2d{
+	center := Vector2d{
 		X: (q.Point1.X + q.Point2.X + q.Point3.X + q.Point4.X) / 4,
 		Y: (q.Point1.Y + q.Point2.Y + q.Point3.Y + q.Point4.Y) / 4,
 	}
@@ -84,8 +82,7 @@ func (q *Quad) RotateAboutCenter(angleRads float64) {
 }
 
 // Render renders the Quad
-func (q *Quad) Render() ([]primitives.Vector2d, error) {
-
+func (q *Quad) Render() ([]Vector2d, error) {
 	// Get longest line
 	l1 := q.Point1.GetRelativeCoords(q.Point2)
 	maxLineLength := l1.GetAbs()
@@ -99,29 +96,29 @@ func (q *Quad) Render() ([]primitives.Vector2d, error) {
 	// Allocate 4x maximum line length for every line on the quad
 	lineLen := int(math.Ceil(maxLineLength))
 	pts := 4*lineLen + 4
-	newCoords := make([]primitives.Vector2d, pts)
+	newCoords := make([]Vector2d, pts)
 	tChange := 1 / maxLineLength
 	i := 0
 	// Draw it clockwise
 	for t := 0.0; t <= 1.0; t += tChange {
 		minT := 1 - t
-		//1->2
-		newCoords[i] = primitives.Vector2d{
+		// 1->2
+		newCoords[i] = Vector2d{
 			X: (minT * q.Point1.X) + (t * q.Point2.X),
 			Y: (minT * q.Point1.Y) + (t * q.Point2.Y),
 		}
-		//2->4
-		newCoords[lineLen+i] = primitives.Vector2d{
+		// 2->4
+		newCoords[lineLen+i] = Vector2d{
 			X: (minT * q.Point2.X) + (t * q.Point4.X),
 			Y: (minT * q.Point2.Y) + (t * q.Point4.Y),
 		}
-		//3->4
-		newCoords[(2*lineLen)+i] = primitives.Vector2d{
+		// 3->4
+		newCoords[(2*lineLen)+i] = Vector2d{
 			X: (minT * q.Point4.X) + (t * q.Point3.X),
 			Y: (minT * q.Point4.Y) + (t * q.Point3.Y),
 		}
-		//1->3
-		newCoords[(3*lineLen)+i] = primitives.Vector2d{
+		// 1->3
+		newCoords[(3*lineLen)+i] = Vector2d{
 			X: (minT * q.Point3.X) + (t * q.Point1.X),
 			Y: (minT * q.Point3.Y) + (t * q.Point1.Y),
 		}

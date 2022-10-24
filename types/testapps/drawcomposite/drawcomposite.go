@@ -8,14 +8,13 @@ import (
 	"math"
 	"os"
 
-	"github.com/danielh2942/renderer/pkg/primitives"
-	"github.com/danielh2942/renderer/pkg/rend2img"
-	"github.com/danielh2942/renderer/pkg/types"
+	"github.com/danielh2942/renderer/rend2img"
+	"github.com/danielh2942/renderer/types"
 )
 
 func main() {
 	star := types.NPoly{
-		Points: []primitives.Vector2d{
+		Points: []types.Vector2d{
 			{X: 300, Y: 0},
 			{X: 388, Y: 179},
 			{X: 585, Y: 207},
@@ -32,7 +31,7 @@ func main() {
 	// Unfilled composite
 	compPts, _ := star.RenderComposite()
 
-	minMax, _ := primitives.GetCompositeVector2dMinMax(compPts)
+	minMax, _ := types.GetCompositeVector2dMinMax(compPts)
 
 	minMax[1] = minMax[1].GetRelativeCoords(minMax[0])
 
@@ -56,21 +55,21 @@ func main() {
 
 	// Render out the boxes of the afforementioned shape
 
-	//img = image.NewRGBA(image.Rect(0, 0, int(minMax[1].X)+1, int(minMax[1].Y)+1))
+	// img = image.NewRGBA(image.Rect(0, 0, int(minMax[1].X)+1, int(minMax[1].Y)+1))
 
 	triangles := star.GetTriangles()
 
 	for _, t := range triangles {
-		tMinMaxPts, _ := primitives.GetVector2dMinMax([]primitives.Vector2d{t.Point1, t.Point2, t.Point3})
+		tMinMaxPts, _ := types.GetVector2dMinMax([]types.Vector2d{t.Point1, t.Point2, t.Point3})
 
 		mQd := types.Quad{
 			Point1: tMinMaxPts[0],
 			Point4: tMinMaxPts[1],
-			Point2: primitives.Vector2d{
+			Point2: types.Vector2d{
 				X: tMinMaxPts[1].X,
 				Y: tMinMaxPts[0].Y,
 			},
-			Point3: primitives.Vector2d{
+			Point3: types.Vector2d{
 				X: tMinMaxPts[0].X,
 				Y: tMinMaxPts[1].Y,
 			},
@@ -119,5 +118,4 @@ func main() {
 		fmt.Println("ERROR", err)
 	}
 	f.Close()
-
 }

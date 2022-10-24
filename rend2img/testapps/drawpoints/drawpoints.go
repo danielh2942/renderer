@@ -5,9 +5,9 @@ import (
 	"image/png"
 	"os"
 
-	"github.com/danielh2942/renderer/pkg/primitives"
-	"github.com/danielh2942/renderer/pkg/rend2img"
-	"github.com/danielh2942/renderer/pkg/types"
+	"github.com/danielh2942/renderer/primitives"
+	"github.com/danielh2942/renderer/rend2img"
+	"github.com/danielh2942/renderer/types"
 )
 
 func main() {

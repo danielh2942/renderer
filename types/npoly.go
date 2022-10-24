@@ -2,17 +2,15 @@ package types
 
 import (
 	"math"
-
-	"github.com/danielh2942/renderer/pkg/primitives"
 )
 
 type NPoly struct {
 	// each point is connected to the next and the last is connected to the 0th one
-	Points []primitives.Vector2d `json:"Points"`
+	Points []Vector2d `json:"Points"`
 }
 
 // Translate moves all points by some vector
-func (np *NPoly) Translate(vec primitives.Vector2d) {
+func (np *NPoly) Translate(vec Vector2d) {
 	for i, j := range np.Points {
 		j.Translate(vec)
 		np.Points[i] = j
@@ -52,7 +50,7 @@ func (np *NPoly) ScaleXY(scaleFactorX float64, scaleFactorY float64) {
 }
 
 // RotateAbout rotates all points around some arbitrary point by some magnitude
-func (np *NPoly) RotateAbout(vec primitives.Vector2d, angleRads float64) {
+func (np *NPoly) RotateAbout(vec Vector2d, angleRads float64) {
 	for i, j := range np.Points {
 		j.RotateAbout(vec, angleRads)
 		np.Points[i] = j
@@ -60,7 +58,7 @@ func (np *NPoly) RotateAbout(vec primitives.Vector2d, angleRads float64) {
 }
 
 // getCenter returns the Center Vector
-func (np *NPoly) getCenter() primitives.Vector2d {
+func (np *NPoly) getCenter() Vector2d {
 	// Get center of the polygon
 	var mX float64 = 0
 	var mY float64 = 0
@@ -72,12 +70,11 @@ func (np *NPoly) getCenter() primitives.Vector2d {
 	mX /= float64(len(np.Points))
 	mY /= float64(len(np.Points))
 
-	return primitives.Vector2d{X: mX, Y: mY}
+	return Vector2d{X: mX, Y: mY}
 }
 
 // RotateAboutCenter rotates about the center of a polygon
 func (np *NPoly) RotateAboutCenter(angleRads float64) {
-
 	center := np.getCenter()
 
 	// Rotate about it
@@ -113,7 +110,7 @@ func (np *NPoly) GetTriangles() []Triangle {
 }
 
 // Render draws the poly as points
-func (np *NPoly) Render() ([]primitives.Vector2d, error) {
+func (np *NPoly) Render() ([]Vector2d, error) {
 	maxLineLength := 0.0
 	for i, v := range np.Points {
 		// always check next val (or if it's the last one, check the first)
@@ -128,7 +125,7 @@ func (np *NPoly) Render() ([]primitives.Vector2d, error) {
 
 	lineLen := int(math.Ceil(maxLineLength))
 	pts := len(np.Points) * lineLen
-	newCoords := make([]primitives.Vector2d, pts+1)
+	newCoords := make([]Vector2d, pts+1)
 	tChange := 1 / maxLineLength
 	i := 0
 
@@ -136,12 +133,12 @@ func (np *NPoly) Render() ([]primitives.Vector2d, error) {
 		minT := 1 - t
 		for j, v := range np.Points {
 			if j == len(np.Points)-1 {
-				newCoords[(j*lineLen)+i] = primitives.Vector2d{
+				newCoords[(j*lineLen)+i] = Vector2d{
 					X: (minT * v.X) + (t * np.Points[0].X),
 					Y: (minT * v.Y) + (t * np.Points[0].Y),
 				}
 			} else {
-				newCoords[(j*lineLen)+i] = primitives.Vector2d{
+				newCoords[(j*lineLen)+i] = Vector2d{
 					X: (minT * v.X) + (t * np.Points[j+1].X),
 					Y: (minT * v.Y) + (t * np.Points[j+1].Y),
 				}
@@ -152,11 +149,12 @@ func (np *NPoly) Render() ([]primitives.Vector2d, error) {
 	return newCoords, nil
 }
 
-func (np *NPoly) RenderComposite() ([][]primitives.Vector2d, error) {
-
+// RenderComposite renders the NPoly as a collection of triangles as opposed to one
+// Polygon, this is good for more complex draws
+func (np *NPoly) RenderComposite() ([][]Vector2d, error) {
 	triangles := np.GetTriangles()
 
-	outp := make([][]primitives.Vector2d, len(np.Points))
+	outp := make([][]Vector2d, len(np.Points))
 	for i, t := range triangles {
 		tPts, _ := t.Render()
 		outp[i] = tPts
