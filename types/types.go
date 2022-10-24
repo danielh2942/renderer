@@ -14,8 +14,20 @@ type Obj2D interface {
 	ScaleX(float64)                // Scale X of all Points by Z magnitude
 	ScaleY(float64)                // Scale Y of all Points by Z magnitude
 	ScaleXY(float64, float64)      // Scale X and Y of all points by Z and A respectively
-	RotateAbout(Vector2d, float64) // Rotate all points around given point by X coords
+	RotateAbout(Vector2d, float64) // Rotate all points around given point by X degrees
 	RotateAboutCenter(float64)     // Rotate a 2D Object about its center
+}
+
+// Obj3D is an interface defining the API for any 3D object that can be handled by the renderer
+type Obj3D interface {
+	Obj2D
+	ScaleXZ(float64, float64)              // Scale X and Z values by A and B magnitudes
+	ScaleYZ(float64, float64)              // Scale Y and Z values by A and B magnitudes
+	ScaleXYZ(float64, float64)             // Scale X, Y, and Z values by A, B, and C magnitudes
+	Scale3D(float64)                       // Scale all Values by some magnitude
+	Translate3D(Vector3d)                  // Translate by a 3D value
+	RotateAboutPoint3D(Vector3d, Vector3d) // Rotate about some point by some degrees X,Y,Z rads stored as a vector
+	RotateAboutCenter3D(Vector3d)          // Rotate a 3D object About its center
 }
 
 type Renderable interface {
