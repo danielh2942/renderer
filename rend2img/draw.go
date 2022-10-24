@@ -6,7 +6,7 @@ import (
 	"math"
 	"unsafe"
 
-	"github.com/danielh2942/renderer/primitives"
+	"github.com/danielh2942/renderer/types"
 )
 
 /*
@@ -24,8 +24,8 @@ func blendColors(col color.Color, col2 color.Color) color.RGBA {
 */
 
 // DrawPoints draws the points provided as an image.
-func DrawPoints(inp []primitives.Vector2d, col [4]byte) *image.RGBA {
-	minMax, _ := primitives.GetVector2dMinMax(inp)
+func DrawPoints(inp []types.Vector2d, col [4]byte) *image.RGBA {
+	minMax, _ := types.GetVector2dMinMax(inp)
 	minMax[1] = minMax[1].GetRelativeCoords(minMax[0])
 
 	// Create minimum image required to store the shape
@@ -86,7 +86,7 @@ func FillShape(img *image.RGBA, col [4]byte) {
 					prev[0] = x
 					prev[1] = y
 				} else {
-					//Draw a scanline
+					// Draw a scanline
 					ScanLineFill(img, prev[0]+1, x, y, col)
 				}
 			}
@@ -95,8 +95,8 @@ func FillShape(img *image.RGBA, col [4]byte) {
 }
 
 // DrawCompositePoints takes a composite shape and draws it.
-func DrawCompositePoints(inpVec [][]primitives.Vector2d, col [4]byte) (*image.RGBA, error) {
-	minMax, err := primitives.GetCompositeVector2dMinMax(inpVec)
+func DrawCompositePoints(inpVec [][]types.Vector2d, col [4]byte) (*image.RGBA, error) {
+	minMax, err := types.GetCompositeVector2dMinMax(inpVec)
 	if err != nil {
 		return nil, err
 	}
