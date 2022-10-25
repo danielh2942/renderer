@@ -1,14 +1,13 @@
 package types
 
 import (
-	//"encoding/json"
 	"math"
 )
 
 // Vector3d is the primitive type for all 3D objects
 type Vector3d struct {
 	Vector2d
-	Z float64
+	Z float64 `json:"Z"`
 }
 
 // ScaleXZ scales X and Z values by some factors
@@ -100,36 +99,3 @@ func (v3d *Vector3d) RotateAbout3D(point, amounts Vector3d) {
 
 // RotateAboutCenter3D does nothing on this as it's the center of itself
 func (v3d *Vector3d) RotateAboutCenter3D(ret Vector3d) {}
-/*
-// MarshallJSON has to be manually implemented for this as inheritance is funky
-func (v3d *Vector3d) MarshallJSON() ([]byte, error) {
-	return json.Marshal(&struct {
-		X float64 `json:"x"`
-		Y float64 `json:"y"`
-		Z float64 `json:"z"`
-	}{
-		X: v3d.X,
-		Y: v3d.Y,
-		Z: v3d.Z,
-	})
-}
-
-// UnmarshallJSON has to be manually implemented for this as inheritance is funky
-func (v3d *Vector3d) UnmarshallJSON(data []byte) error {
-	temp := &struct {
-		X float64 `json:"x"`
-		Y float64 `json:"y"`
-		Z float64 `json:"z"`
-	}{}
-
-	if err := json.Unmarshal(data, &temp); err != nil {
-		return err
-	}
-
-	v3d.X = temp.X
-	v3d.Y = temp.Y
-	v3d.Z = temp.Z
-
-	return nil
-}
-*/
