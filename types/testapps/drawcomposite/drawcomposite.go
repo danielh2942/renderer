@@ -81,7 +81,8 @@ func main() {
 			for x := mQd.Point1.X; x <= mQd.Point2.X; x++ {
 				if _, _, _, a := img.At(int(math.Round(x)), int(math.Round(y))).RGBA(); a != 0 {
 					intersections++
-					for _, _, _, a := img.At(int(math.Round(x)), int(math.Round(y))).RGBA(); a != 0; _, _, _, a = img.At(int(math.Round(x)), int(math.Round(y))).RGBA() {
+					for _, _, _, a := img.At(int(math.Round(x)),
+						int(math.Round(y))).RGBA(); a != 0; _, _, _, a = img.At(int(math.Round(x)), int(math.Round(y))).RGBA() {
 						x++
 					}
 					x--
@@ -89,7 +90,11 @@ func main() {
 					if intersections%2 == 1 {
 						prev = int(math.Round(x))
 					} else {
-						rend2img.ScanLineFill(img, prev+1, int(math.Round(x)), int(math.Round(y)), [4]byte{0xFF, 0x00, 0x00, 0xFF})
+						rend2img.ScanLineFill(img,
+							prev+1,
+							int(math.Round(x)),
+							int(math.Round(y)),
+							[4]byte{0xFF, 0x00, 0x00, 0xFF})
 					}
 				}
 			}
