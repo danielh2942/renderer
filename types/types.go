@@ -36,6 +36,7 @@ type Renderable interface {
 
 // RenderableComposite constructs an Obj2D image as a more complicated shape
 type RenderableComposite interface {
+	GetTriangles() []Triangle
 	RenderComposite() ([][]Vector2d, error)
 }
 

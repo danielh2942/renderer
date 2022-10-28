@@ -119,3 +119,93 @@ func DrawCompositePoints(inpVec [][]types.Vector2d, col [4]byte) (*image.RGBA, e
 
 	return img, nil
 }
+
+// DrawFillCompositePoints takes a composite and draws a filled one
+func DrawFillCompositePoints(inpVec [][]types.Vector2d, col [4]byte) (*image.RGBA, error) {
+	img, _ := DrawCompositePoints(inpVec, col)
+	for y := 0; y < img.Rect.Max.Y; y++ {
+		intersections := 0
+		var prev int
+		for x := 0; x < img.Rect.Max.X; x++ {
+			if _, _, _, a := img.At(x, y).RGBA(); a != 0 {
+				intersections++
+				for _, _, _, a := img.At(x, y).RGBA(); a != 0 && x != img.Rect.Max.X; _, _, _, a = img.At(x, y).RGBA() {
+					x++
+				}
+				x--
+
+				if intersections%2 == 1 {
+					prev = x
+				} else {
+					ScanLineFill(img, prev+1, x, y, col)
+				}
+			}
+		}
+	}
+	return img, nil
+}
+
+// DrawFillCompositeShape takes a renderable shape and draws a filled version
+func DrawFillCompositeShape(shape types.RenderableComposite, col [4]byte) (*image.RGBA, error) {
+	compPts, _ := shape.RenderComposite()
+	minMax, _ := types.GetCompositeVector2dMinMax(compPts)
+
+	minMax[1] = minMax[1].GetRelativeCoords(minMax[0])
+
+	img := image.NewRGBA(image.Rect(0, 0, int(minMax[1].X)+1, int(minMax[1].Y)+1))
+
+	for _, arr := range compPts {
+		for _, pt := range arr {
+			img.SetRGBA(int(math.Round(pt.X)), int(math.Round(pt.Y)), color.RGBA{
+				R: col[0],
+				G: col[1],
+				B: col[2],
+				A: col[3],
+			})
+		}
+	}
+
+	triangles := shape.GetTriangles()
+
+	for _, t := range triangles {
+		tMinMaxPts, _ := types.GetVector2dMinMax([]types.Vector2d{t.Point1, t.Point2, t.Point3})
+
+		mQd := types.Quad{
+			Point1: tMinMaxPts[0],
+			Point4: tMinMaxPts[1],
+			Point2: types.Vector2d{
+				X: tMinMaxPts[1].X,
+				Y: tMinMaxPts[0].Y,
+			},
+			Point3: types.Vector2d{
+				X: tMinMaxPts[0].X,
+				Y: tMinMaxPts[1].Y,
+			},
+		}
+
+		for y := mQd.Point1.Y; y <= mQd.Point3.Y; y++ {
+			intersections := 0
+			var prev int
+			for x := mQd.Point1.X; x <= mQd.Point2.X; x++ {
+				if _, _, _, a := img.At(int(math.Round(x)), int(math.Round(y))).RGBA(); a != 0 {
+					intersections++
+					for _, _, _, a := img.At(int(math.Round(x)), int(math.Round(y))).RGBA(); (a != 0) && x <= mQd.Point2.X; x++ {
+					}
+					x--
+
+					if intersections%2 == 1 {
+						prev = int(math.Round(x))
+					} else {
+						ScanLineFill(img,
+							prev+1,
+							int(math.Round(x)),
+							int(math.Round(y)),
+							col)
+					}
+				}
+			}
+		}
+	}
+
+	return img, nil
+}
